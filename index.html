@@ -1,0 +1,57 @@
+<html>
+<head>
+<script>
+var items = ['VICTIM_PARTY_ID', 'MARKET']
+function generateNDownloadCSV(filename){
+		var rows = [];
+		rows = document.getElementById('textarea').value.split(',');
+        if (!rows || !rows.length) {
+            return;
+        }
+        const separator = ',';
+        const keys = Object.keys(rows[0]);
+        const headerKeys = ['VICTIM_PARTY_ID','MARKET']//keys.map((k) => k && k.toLocaleUpperCase());
+		console.log("headerkeys "+ headerKeys + " rows "+ rows)
+        var csvContent =
+            headerKeys+
+            '\n' +
+            rows
+                .map((row) => {
+                    return row.replace(/\s+/g, ',')
+                })
+                .join('\n');
+
+				
+				//csvContent = headerKeys+'\n'+"ODB-5169,SE\nODB-0000,SE"
+				//csvContent = "0,1\nODB-5169,SE\nODB-0000,SE"
+				//"0,1\nODB-5169,SE\nODB-0000,SE"
+				console.log("csvcontent "+ csvContent);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        if (navigator.msSaveBlob) {
+            // IE 10+
+            navigator.msSaveBlob(blob, filename);
+        } else {
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                // Browsers that support HTML5 download attribute
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+    }
+</script>
+</head>
+<h1>CSV file Utility for Victim Delete</h1>
+<body><textarea id="textarea" rows="4" cols="80">ODBxxxx-5169-4xxx-0000-000xxxx00000 SE,ODBxxxx-5169-4xxx-0000-000xxxx00001 SE</textarea>
+<!-- <textarea id="textarea">ODB-5169 SE,ODB-0000 SE</textarea>-->
+<br><br>
+<button onclick="generateNDownloadCSV('test.csv');">Download CSV</button>
+
+</body>
+
+</html>
